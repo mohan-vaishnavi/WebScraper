@@ -6,48 +6,42 @@ from bs4 import BeautifulSoup
 import sys
 import time
 
-def news_extractor():
-    url = 'https://timesofindia.indiatimes.com/news'
-    response = requests.get(url)
+url = 'https://timesofindia.indiatimes.com/news'
+response = requests.get(url)
 
-    data = response.text
-    soup = BeautifulSoup(data, 'html.parser')
+data = response.text
+soup = BeautifulSoup(data, 'html.parser')
 
-    # headings = soup.find_all('h2', {'class': 'sechead'})
-    msid = wish()
-    if msid == 'exit':
-        print('Have a great day! Do come back for more news!')
-        sys.exit(0)
-    items = soup.find_all('ul', {'data-msid': msid})
-    print('\n')
-    for item in items:
-        if msid == '-2128958273':
-            head_lines = item.find_all('span', {'class': 'curpgcss'})
+"""
+latest news : 'data-msid':"-2128958273"
+entertainment : 'data-msid':"7507116"
+business :'data-msid':"1898055"
+TV news : 'data-msid':"46096049"
+sports : 'data-msid':"4440091"
+"""
+
+
+msid_dictionary = {'Latest':"-2128958273", 'Entertainment':"7507116", 'Business':"1898055", 'TV news':"46096049",'Sports':"4440091"}
+
+def extractor(msid):
+    latest_news = soup.find('ul', {'data-msid':msid})
+    items = latest_news.find_all('li')
+
+
+    for i in range(len(items)):
+        desc = items[i].find('span', {'class':'w_desc'})
+        if desc is not None:
+            if desc.text != "":         
+                print(f'>> {desc.text}\n')
         else:
-            head_lines = item.find_all('span')
+            desc = items[i].find('span', {'class':'w_tle'})
+            print(f'>> {desc.text}\n')
 
-        for head_line in head_lines:
-            print('-->' + head_line.text)
-        print('\n' + '*****' + '\n')
-
-
-def wish():
-        time.sleep(5)
-        print('News Menu for the day!\n1: Entertainment\n2: Business\n3: Sports')
-        print('4: TV\n5: Main Content\n0:Exit\nWhat\'s your interest?! (Select a number)')
-        ch = input()
-        switcher = {
-                '1': '7507116',
-                '2': '1898055',
-                '3': '4440091',
-                '4': '46096049',
-                '5': '-2128958273',
-                '0': 'exit'
-            }
-
-        return switcher[ch]
+for item in msid_dictionary:
+    msid = msid_dictionary[item]
+    print(f'\nToday\'s {item} News\n\n')
+    extractor(msid)
 
 
-while 1:
-    news_extractor()
 
+    
