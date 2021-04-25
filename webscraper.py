@@ -34,7 +34,7 @@ def news_extractor():
 def wish():
         time.sleep(5)
         print('News Menu for the day!\n1: Entertainment\n2: Business\n3: Sports')
-        print('4: TV\n5: Main Content\n0:Exit\nWhat\'s your interest?!')
+        print('4: TV\n5: Main Content\n0:Exit\nWhat\'s your interest?! (Select a number)')
         ch = input()
         switcher = {
                 '1': '7507116',
